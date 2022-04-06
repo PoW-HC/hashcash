@@ -1,0 +1,51 @@
+name: Tests
+
+on:
+  push:
+  schedule:
+    - cron: '0 19 * * 0'
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [1.16, 1.17, 1.18]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Setup go
+        id: go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Cache go
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-v${{ matrix.go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Run tests
+        id: test
+        run: |
+          make test
+          echo "::set-output name=coverage::$(make coverage)"
+
+      - name: Create Coverage Badge
+        uses: schneegans/dynamic-badges-action@v1.2.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: cce912d48b587ba656b45a0cba34510b
+          filename: pow-hc-test-coverage.json
+          label: Coverage
+          message: ${{ steps.test.outputs.coverage }}
+          color: green
