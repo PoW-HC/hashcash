@@ -17,5 +17,5 @@ require (
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	golang.org/x/crypto v0.0.0-20220331220935-ae2d96664a29 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220330205332-605edab4323b // indirect
-	golang.org/x/sys v0.0.0-20220405210540-1e041c57c461 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
